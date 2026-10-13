@@ -1,0 +1,41 @@
+// Generated at container start by apply-brand.sh. Do not edit in the container;
+// edit deploy/railway/plugnmeet/brand/config.js.tmpl in the fork.
+window.plugNmeetConfig = {
+  serverUrl: '${PNM_SERVER_URL}',
+  customLogo: {
+    main_logo_light: '/assets/la/logo-light.webp',
+    main_logo_dark: '/assets/la/logo-dark.webp',
+  },
+  enableAdaptiveStream: true,
+  enableDynacast: true,
+  enableSimulcast: true,
+  videoCodec: 'vp8',
+  defaultWebcamResolution: 'h720',
+  defaultScreenShareResolution: 'h1080fps15',
+  defaultAudioPreset: 'music',
+  stopMicTrackOnMute: true,
+  focusActiveSpeakerWebcam: true,
+  maxNumDisplayWebcams: {
+    desktop: 24,
+    tablet: 9,
+    mobile: 6,
+  },
+  // The client injects designCustomization colors only in light mode.
+  disableDarkMode: true,
+  designCustomization: {
+    primary_color: '#EF4423',
+    primary_btn_bg_color: '#CC2E0F',
+    primary_btn_text_color: '#ffffff',
+    secondary_color: '#141414',
+    secondary_btn_bg_color: '#F5F5F5',
+    secondary_btn_text_color: '#141414',
+    header_bg_color: '#ffffff',
+    footer_bg_color: '#ffffff',
+    footer_icon_bg_color: '#F5F5F5',
+    footer_icon_color: '#141414',
+    side_panel_bg_color: '#FAFAFA',
+    background_color: '#FAFAFA',
+    custom_css_url: '/assets/la-room.css',
+    custom_logo: '/assets/la/logo-light.webp',
+  },
+};

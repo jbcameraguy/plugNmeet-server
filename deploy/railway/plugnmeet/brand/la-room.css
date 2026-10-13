@@ -1,0 +1,24 @@
+/* Limo Anywhere branding for the plugNmeet client. Colors come from
+   designCustomization in config.js; this file sets fonts and focus. */
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Roboto:wght@400;500&display=swap');
+
+html,
+body,
+button,
+input,
+textarea,
+select {
+  font-family: 'Roboto', system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Barlow', 'Roboto', system-ui, sans-serif;
+}
+
+:focus-visible {
+  outline: 2px solid #CC2E0F;
+  outline-offset: 2px;
+}

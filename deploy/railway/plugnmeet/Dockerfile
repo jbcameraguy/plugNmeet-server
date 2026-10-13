@@ -31,7 +31,7 @@ FROM debian:stable-slim
 RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get update && \
     apt-get install --no-install-recommends -y \
-    wget curl ca-certificates libreoffice img2pdf ffmpeg gettext-base \
+    wget curl ca-certificates libreoffice img2pdf ffmpeg gettext-base unzip \
     libasound2 libssl3 libopus0 libsoxr0 libopusfile0 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -43,6 +43,9 @@ COPY --from=builder /opt/speechsdk /opt/speechsdk
 COPY docker-build/docker-entrypoint.sh /usr/local/bin/
 COPY deploy/railway/plugnmeet/start.sh /usr/local/bin/pnm-start.sh
 COPY deploy/railway/plugnmeet/config.yaml.tmpl /etc/plugnmeet/config.yaml.tmpl
+COPY deploy/railway/plugnmeet/template-vars.txt /etc/plugnmeet/template-vars.txt
+COPY deploy/railway/plugnmeet/webhook-defaults.sh /etc/plugnmeet/webhook-defaults.sh
+COPY deploy/railway/plugnmeet/brand/ /usr/local/share/plugnmeet-brand/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh /usr/local/bin/pnm-start.sh
 
 EXPOSE 8080

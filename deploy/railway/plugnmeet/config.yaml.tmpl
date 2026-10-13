@@ -9,8 +9,8 @@ client:
   secret: "${PNM_API_SECRET}"
   token_validity: 10m
   webhook_conf:
-    enable: false
-    url: ""
+    enable: ${PNM_WEBHOOK_ENABLED}
+    url: "${PNM_WEBHOOK_URL}"
     enable_for_per_meeting: false
   prometheus:
     enable: false
@@ -25,13 +25,12 @@ client:
   copyright_conf:
     allow_override: false
     display: true
-    text: 'Powered by <a href="https://www.plugnmeet.org" target="_blank">plugNmeet</a>'
+    text: 'Limo Anywhere Onboarding'
   bbb_join_host: "${PNM_SERVER_URL}"
-  # Downloads the web client at startup, so the image doesn't need to include it.
-  # from_release must be a real tag: an empty value builds a ".../download/latest/..."
-  # URL that GitHub answers with 404.
+  # start.sh downloads and brands the web client before the server starts, so
+  # the server's own download stays off. PNM_CLIENT_VERSION must be a real tag.
   auto_client_download:
-    enabled: true
+    enabled: false
     server_url: "${PNM_SERVER_URL}"
     from_custom_url: ""
     from_release: "${PNM_CLIENT_VERSION}"

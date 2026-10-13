@@ -1,17 +1,30 @@
 #!/bin/sh
-# Renders /app/config.yaml from the template using Railway variables, then starts
-# the server. Only the listed variables are substituted, so any other `$` in the
-# template is left alone.
+# Downloads and brands the plugNmeet web client, renders /app/config.yaml from
+# the template using Railway variables, then starts the server. Only the listed
+# variables are substituted, so any other `$` in the template is left alone.
+# Any failure stops the container rather than serving an unbranded client.
 set -eu
 
+ETC=/etc/plugnmeet
 mkdir -p /app/data/log
 
-envsubst '${PNM_SERVER_URL} ${PNM_CLIENT_VERSION} ${PNM_API_KEY} ${PNM_API_SECRET}
-  ${LIVEKIT_URL} ${LIVEKIT_API_KEY} ${LIVEKIT_API_SECRET}
-  ${REDIS_HOST} ${REDIS_PORT} ${REDIS_USER} ${REDIS_PASSWORD}
-  ${MYSQL_HOST} ${MYSQL_PORT} ${MYSQL_USER} ${MYSQL_PASSWORD} ${MYSQL_DATABASE}
-  ${NATS_URL} ${NATS_WS_URL} ${PNM_NATS_USER_SEED} ${PNM_NATS_ISSUER_SEED} ${PNM_NATS_XKEY_SEED}' \
-  < /etc/plugnmeet/config.yaml.tmpl > /app/config.yaml
+: "${PNM_SERVER_URL:?PNM_SERVER_URL must be set}"
+: "${PNM_CLIENT_VERSION:?PNM_CLIENT_VERSION must name a client release tag}"
+. "$ETC/webhook-defaults.sh"
+
+TMP=$(mktemp -d)
+curl -fsSL -o "$TMP/client.zip" \
+  "https://github.com/mynaparrot/plugNmeet-client/releases/download/${PNM_CLIENT_VERSION}/client.zip"
+unzip -q "$TMP/client.zip" -d "$TMP"
+[ -d "$TMP/client/dist" ] || { echo "start: client/dist missing from client.zip" >&2; exit 1; }
+rm -rf /app/client/dist
+mkdir -p /app/client
+mv "$TMP/client/dist" /app/client/dist
+rm -rf "$TMP"
+
+sh /usr/local/share/plugnmeet-brand/apply-brand.sh /app/client/dist
+
+envsubst "$(cat "$ETC/template-vars.txt")" < "$ETC/config.yaml.tmpl" > /app/config.yaml
 chmod 600 /app/config.yaml
 
 exec plugnmeet-server

@@ -37,7 +37,17 @@ grep -q "serverUrl: 'https://meet.example.test'," "$CFG" || fail "serverUrl not 
 grep -q "disableDarkMode: true" "$CFG" || fail "dark mode not disabled"
 grep -q "primary_btn_bg_color: '#CC2E0F'" "$CFG" || fail "button fill is not the AA-safe orange"
 grep -q "custom_css_url: '/assets/la-room.css'" "$CFG" || fail "custom CSS not wired"
-grep -q "main_logo_light: '/assets/la/logo-light.webp'" "$CFG" || fail "light logo not wired"
+# The client accepts a logo only as an absolute http(s) URL (isValidHttpUrl).
+grep -q "main_logo_light: 'https://meet.example.test/assets/la/logo-light.webp'" "$CFG" || fail "light logo is not an absolute URL"
+grep -q "main_logo_dark: 'https://meet.example.test/assets/la/logo-dark.webp'" "$CFG" || fail "dark logo is not an absolute URL"
+grep -q "custom_logo: 'https://meet.example.test/assets/la/logo-light.webp'" "$CFG" || fail "custom_logo is not an absolute URL"
+
+# The client's Tailwind palette is blue; la-room.css repaints it.
+CSS="$WORK/dist/assets/la-room.css"
+grep -qF 'border-[rgba(124,206,247' "$CSS" || fail "la-room.css does not repaint the active footer button border"
+for v in '--color-primary-color: #CC2E0F' '--color-secondary-color: #EF4423' '--color-Gray-200: #E0E0E0' '--color-Blue2-500: #EF4423'; do
+  grep -q -- "$v" "$CSS" || fail "la-room.css does not set $v"
+done
 if grep -q '\${PNM_SERVER_URL}' "$CFG"; then fail "unsubstituted variable left in config.js"; fi
 
 for f in la-room.css la/logo-light.webp la/logo-dark.webp la/favicon.png; do
